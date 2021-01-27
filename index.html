@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <canvas width="400" height="300" id="lienzo"></canvas>
+    <script>
+      let cv,
+        cx,
+        objetos,
+        objetoActual = null;
+      let inicioX = 0,
+        inicioY = 0;
+      function actualizar() {
+        cx.fillStyle = "#f0f0f0";
+        cx.fillRect(0, 0, 400, 300);
+        for (var i = 0; i < objetos.length; i++) {
+          cx.fillStyle = objetos[i].color;
+          cx.fillRect(
+            objetos[i].x,
+            objetos[i].y,
+            objetos[i].width,
+            objetos[i].height
+          );
+        }
+      }
+      window.onload = function () {
+        console.log("ingrese");
+        objetos = [];
+        cv = document.getElementById("lienzo");
+        cx = cv.getContext("2d");
+        //agregar objetos de prueba
+        objetos.push({
+          x: 0,
+          y: 0,
+          width: 100,
+          height: 200,
+          color: "#00f",
+        });
+        objetos.push({
+          x: 300,
+          y: 150,
+          width: 50,
+          height: 100,
+          color: "#f00",
+        });
+        objetos.push({
+          x: 120,
+          y: 100,
+          width: 50,
+          height: 50,
+          color: "#0f0",
+        });
+        actualizar();
+        cv.onmousedown = (e) => {
+          for (let i = 0; i < objetos.length; i++) {
+            //ingresar si hace click en el objeto
+            if (
+              objetos[i].x < event.clientX &&
+              objetos[i].width + objetos[i].x > event.clientX &&
+              objetos[i].y < event.clientY &&
+              objetos[i].height + objetos[i].y > event.clientY
+            ) {
+              //identifica al objeto
+              objetoActual = objetos[i];
+              //Da la cordenada de donde estoy  haciendo click
+              inicioY = event.clientY - objetos[i].y;
+              inicioX = event.clientX - objetos[i].x;
+              console.log("inicioY", event.clientY, objetos[i].y);
+              console.log("inicioX", event.clientX, objetos[i].x);
+              console.log("inicios", inicioX, inicioY);
+              break;
+            }
+            //   const element = objetos[i];
+          }
+        };
+        cv.onmousemove = (e) => {
+          if (objetoActual != null) {
+            console.log("x:", event.clientX, "'y'", event.clientY);
+            console.log("inicios", inicioX, inicioY);
+            objetoActual.x = event.clientX - inicioX;
+            objetoActual.y = event.clientY - inicioY;
+            console.log("Onmousemove", objetoActual.x, objetoActual.y);
+            actualizar();
+          }
+        };
+        cv.onmouseup = function (evet) {
+          objetoActual = null;
+        };
+      };
+    </script>
+  </body>
+</html>
